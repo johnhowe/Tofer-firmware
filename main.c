@@ -59,7 +59,7 @@ void putstr(const char *str);
 void initialise(void);
 void bounceImpact(void);
 void bounceDepart(void);
-short isValidBounce(void);
+unsigned char isValidBounce(void);
 interrupt(TIMER0_A1_VECTOR) serviceTimerA(void);
 interrupt(PORT1_VECTOR) servicePort1(void);
 interrupt(USCIAB0RX_VECTOR) USCIAB0RX_ISR();
@@ -128,7 +128,7 @@ int main(void)
         }
 }
 
-short isValidBounce(void)
+unsigned char isValidBounce(void)
 {
 #define MIN_BOUNCE_TIME 200
         return (ticks - impactTime > MIN_BOUNCE_TIME) && (ticks - departTime > MIN_BOUNCE_TIME);
