@@ -47,7 +47,7 @@
 
 #define DEADTIME 2000
 
-#define FLEN 10
+#define FILTER_LENGTH 10
 #define READ_GAIN 100
 #define IR_HIGH 90
 #define IR_LOW 10
@@ -82,7 +82,7 @@ int main(void)
 {
         enum matState mat = down;
         short signalOn = 0;
-        long silo = 0;
+        long lpFilter = 0;
         short irLevel = 0;
 
         initialise();
@@ -105,8 +105,8 @@ int main(void)
                         signalOn = 0;
                 }
 
-                irLevel = silo >> FLEN;
-                silo += (READ_GAIN * signalOn) - irLevel;
+                irLevel = lpFilter >> FILTER_LENGTH;
+                lpFilter += (READ_GAIN * signalOn) - irLevel;
 
                 if (irLevel > IR_HIGH && isValidBounce()) {
                         if (mat == down) {
