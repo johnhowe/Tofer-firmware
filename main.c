@@ -136,8 +136,9 @@ unsigned char isValidBounce(void)
 
 void bounceImpact(void)
 {
+        unsigned long airTime = impactTime - departTime;
         impactTime = ticks;
-        totalAirTime += impactTime - departTime;
+        totalAirTime += airTime;
         if (impactTime - departTime > DEADTIME) {
                 putstr("\n\r");
                 bounceNumber = 1;
@@ -146,7 +147,7 @@ void bounceImpact(void)
         if (bounceNumber % 10 == 1) {
                 putprintf("\n\rBounce\tAirtime\tTotal\tMatTime");
         }
-        putprintf("\n\r%l\t%l\t%l\t", bounceNumber++, impactTime - departTime, totalAirTime);
+        putprintf("\n\r%l\t%l\t%l\t", bounceNumber++, airTime, totalAirTime);
 }
 
 void bounceDepart(void)
