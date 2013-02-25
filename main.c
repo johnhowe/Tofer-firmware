@@ -68,16 +68,16 @@ enum matState {
         up, down
 };
 
-volatile unsigned long ticks; // milliseconds
+volatile long ticks; // milliseconds
 volatile unsigned short rxticks;
-volatile unsigned long lastIrRx;
-unsigned long departTick = 0;
+volatile long lastIrRx;
+long departTick = 0;
 
-unsigned long departTime = 0;
-unsigned long impactTime = 0;
-unsigned long totalAirTime = 0;
-unsigned long bounceNumber = 0;
-unsigned long recordAirTime = 0;
+long departTime = 0;
+long impactTime = 0;
+long totalAirTime = 0;
+long bounceNumber = 0;
+long recordAirTime = 0;
 
 int main(void)
 {
@@ -131,7 +131,7 @@ int main(void)
 
 unsigned char isValidBounce(void)
 {
-#define MIN_BOUNCE_TIME 200
+#define MIN_BOUNCE_TIME 199
         return (ticks - impactTime > MIN_BOUNCE_TIME) && (ticks - departTime > MIN_BOUNCE_TIME);
 }
 
@@ -148,16 +148,12 @@ void bounceImpact(void)
                         putprintf("\n\rBounce\tAirtime\tTotal\tMatTime");
                 }
                 putprintf("\n\r%l",bounceNumber++);
-                if (airTime > recordAirTime) {
-                        recordAirTime = airTime;
+                if (impactTime - departTime > recordAirTime) {
+                        recordAirTime = impactTime - departTime;
                         putprintf("*");
                 }
-                putprintf("\t%l\t%l\t", airTime, totalAirTime);
+                putprintf("\t%l\t%l\t", impactTime - departTime, totalAirTime);
         }
-        if (bounceNumber % 10 == 1) {
-                putprintf("\n\rBounce\tAirtime\tTotal\tMatTime");
-        }
-        putprintf("\n\r%l\t%l\t%l\t", bounceNumber++, impactTime - departTime, totalAirTime);
 }
 
 void bounceDepart(void)
@@ -240,7 +236,7 @@ void putch(char c)
 }
 
 
-static const unsigned long dv[] = {
+static const long dv[] = {
 //      4294967296,     // 32 bit unsigned max
         1000000000,     // +0
          100000000,     // +1
@@ -255,10 +251,10 @@ static const unsigned long dv[] = {
                  1,     // +9
 };
 
-static void xtoa(unsigned long x, const unsigned long *dp)
+static void xtoa(long x, const long *dp)
 {
         char c;
-        unsigned long d;
+        long d;
         if(x) {
                 while(x < *dp) {
                         ++dp;
