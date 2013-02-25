@@ -77,6 +77,7 @@ unsigned long departTime = 0;
 unsigned long impactTime = 0;
 unsigned long totalAirTime = 0;
 unsigned long bounceNumber = 0;
+unsigned long recordAirTime = 0;
 
 int main(void)
 {
@@ -143,11 +144,17 @@ void bounceImpact(void)
                 putstr("\n\r");
                 bounceNumber = 1;
                 totalAirTime = 0;
+        } else {
+                if (bounceNumber % 10 == 1) {
+                        putprintf("\n\rBounce\tAirtime\tTotal\tMatTime");
+                }
+                putprintf("\n\r%l",bounceNumber++);
+                if (airTime > recordAirTime) {
+                        recordAirTime = airTime;
+                        putprintf("*");
+                }
+                putprintf("\t%l\t%l\t", airTime, totalAirTime);
         }
-        if (bounceNumber % 10 == 1) {
-                putprintf("\n\rBounce\tAirtime\tTotal\tMatTime");
-        }
-        putprintf("\n\r%l\t%l\t%l\t", bounceNumber++, airTime, totalAirTime);
 }
 
 void bounceDepart(void)
