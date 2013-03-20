@@ -52,6 +52,9 @@
 #define IR_HIGH 90
 #define IR_LOW 10
 
+#define MIN_BOUNCE_AIRTIME 199
+#define MIN_BOUNCE_BEDTIME 49
+
 void putprintf(char *format, ...);
 void putch(char c);
 void putstr(const char *str);
@@ -59,7 +62,7 @@ void putstr(const char *str);
 void initialise(void);
 void bounceImpact(void);
 void bounceDepart(void);
-unsigned char isValidBounce(void);
+unsigned char isValidBounce(int minTime);
 interrupt(TIMER0_A1_VECTOR) serviceTimerA(void);
 interrupt(PORT1_VECTOR) servicePort1(void);
 interrupt(USCIAB0RX_VECTOR) USCIAB0RX_ISR();
@@ -109,13 +112,13 @@ int main(void)
                 irLevel = lpFilter >> FILTER_LENGTH;
                 lpFilter += (READ_GAIN * signalOn) - irLevel;
 
-                if (irLevel > IR_HIGH && isValidBounce()) {
+                if (irLevel > IR_HIGH && isValidBounce(MIN_BOUNCE_BEDTIME)) {
                         if (mat == down) {
                                 mat = up;
                                 bounceDepart();
                         }
                         BIT_SET(P1OUT, LED2);
-                } else if (irLevel < IR_LOW && isValidBounce()) {
+                } else if (irLevel < IR_LOW && isValidBounce(MIN_BOUNCE_AIRTIME)) {
                         if (mat == up) {
                                 mat = down;
                                 bounceImpact();
@@ -129,10 +132,9 @@ int main(void)
         }
 }
 
-unsigned char isValidBounce(void)
+unsigned char isValidBounce(int minTime)
 {
-#define MIN_BOUNCE_TIME 199
-        return (ticks - impactTime > MIN_BOUNCE_TIME) && (ticks - departTime > MIN_BOUNCE_TIME);
+        return (ticks - impactTime > minTime) && (ticks - departTime > minTime);
 }
 
 void bounceImpact(void)
