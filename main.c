@@ -49,11 +49,11 @@
 
 #define FILTER_LENGTH 10
 #define READ_GAIN 100
-#define IR_HIGH 90
-#define IR_LOW 10
+#define IR_HIGH 55
+#define IR_LOW 45
 
-#define MIN_BOUNCE_AIRTIME 199
-#define MIN_BOUNCE_BEDTIME 49
+#define MIN_BOUNCE_AIRTIME 300
+#define MIN_BOUNCE_BEDTIME 10
 
 void putprintf(char *format, ...);
 void putch(char c);
@@ -134,7 +134,7 @@ int main(void)
 
 unsigned char isValidBounce(int minTime)
 {
-        return (ticks - impactTime > minTime) && (ticks - departTime > minTime);
+        return (ticks - impactTime >= minTime) && (ticks - departTime >= minTime);
 }
 
 void bounceImpact(void)
